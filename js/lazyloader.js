@@ -5,8 +5,8 @@ class LazyLoader {
       loadedClass: "loaded",
       selector: ".lazy-load",
       errorClass: "failed",
-      retryAfter: 1000,
-      maxRetries: 3,
+      retryAfter: 2000,
+      maxRetries: 4,
       loadCallback: null,
       rootMargin: "0px 0px 100px 0px",
       threshold: 0.1,
@@ -21,12 +21,11 @@ class LazyLoader {
     this.init();
   }
 
-  async handleIntersection(entries) {
-    //* use 'async , await' to  wait until each image loads completly then move on
+  handleIntersection(entries) {
     if (!this.observer) return;
     for (const entry of entries) {
       if (entry.isIntersecting) {
-        await this.loadElement(entry.target);
+        this.loadElement(entry.target);
       }
     }
 
@@ -76,6 +75,9 @@ class LazyLoader {
     const data = this.elements.get(element);
     if (!data) return;
     const { loadingClass, loadedClass, loadCallback } = this.options;
+    if (data.status == loadingClass) {
+      console.log(element);
+    }
     if (
       data.status == loadingClass ||
       data.status == loadedClass ||
@@ -102,14 +104,16 @@ class LazyLoader {
       this.unobserve(element);
     } catch (error) {
       this.handleError(element, data);
-      console.log(error);
       throw error;
     }
   }
 
   handleError(element, data) {
     if (!data.retries) data.retries = 1;
+    // removing 'loading status' to allow retrying
+    delete data.status;
     if (data.retries < this.options.maxRetries) {
+      console.log("Retrying loading ", element);
       data.retries += 1;
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
     } else this.markAsError(element);
