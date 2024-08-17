@@ -1,0 +1,262 @@
+@import "./mixins";
+@import url("https://fonts.googleapis.com/css2?family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap");
+:root {
+  --clr-red: hsl(14, 86%, 42%);
+  --clr-green: hsl(159, 69%, 38%);
+  --clr-rose-50: hsl(20, 50%, 98%);
+  --clr-rose-100: hsl(13, 31%, 94%);
+  --clr-rose-300: hsl(14, 25%, 72%);
+  --clr-rose-400: hsl(7, 20%, 60%);
+  --clr-rose-500: hsl(12, 20%, 44%);
+  --clr-rose-900: hsl(14, 65%, 9%);
+
+  --clr-gray-light: #999;
+  --clr-gray-dark: #555454;
+
+  --clr-white: #fff;
+  --clr-black: #000;
+  /* Font Family */
+  --ff-headings: "Red Hat Text", sans-serif;
+
+  /* Font Weight */
+  --fw-normal: 400;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Base font sizes (mobile) */
+  --fs-xs: 0.75rem; /* 12px if base font size is 16px */
+  --fs-sm: 0.875rem; /* 14px */
+  --fs-base: 1rem; /* 16px */
+  --fs-p: 1rem; /* 16px */
+  --fs-h4: 1.125rem; /* 18px */
+  --fs-h2: 1.5rem; /* 24px */
+  --fs-h1: 2rem; /* 32px */
+  --fs-section-title: 2.25rem; /* 36px */
+  --fs-big-title: 2.5rem; /* 40px */
+  /* Transitions */
+  --transition-duration-fast: 0.2s;
+  --transition-duration-base: 0.3s;
+  --transition-duration-slow: 0.5s;
+  --transition-timing-function: ease-in-out;
+
+  /* Shadows */
+  --box-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --box-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --box-shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.15);
+
+  /* Spacing system */
+
+  --spacing-0: 0;
+  --spacing-1: 0.25rem; /* 4px */
+  --spacing-2: 0.5rem; /* 8px */
+  --spacing-3: 0.75rem; /* 12px */
+  --spacing-4: 1rem; /* 16px */
+  --spacing-5: 1.5rem; /* 24px */
+  --spacing-6: 2rem; /* 32px */
+  --spacing-8: 3rem; /* 48px */
+  --spacing-10: 4rem; /* 64px */
+  --spacing-12: 6rem; /* 96px */
+
+  --spacing-responsive: var(--spacing-xs);
+
+  /* Border Radius */
+  --br-1: 4px;
+  --br-2: 8px;
+  --br-3: 10px;
+  --br-4: 16px;
+  --br-5: 20px;
+  --br-6: 24px;
+  --br-pill: 100px;
+  --br-full: 50%;
+
+  --z-index-loader: 1080;
+
+  @include media(md) {
+    --fs-xs: 0.8125rem; /* 13px */
+    --fs-sm: 0.9375rem; /* 15px */
+    --fs-base: 1.0625rem; /* 17px */
+    --fs-p: 1.0625rem; /* 17px */
+    --fs-h4: 1.25rem; /* 20px */
+    --fs-h2: 1.75rem; /* 28px */
+    --fs-h1: 2.5rem; /* 40px */
+    --fs-section-title: 3rem; /* 48px */
+    --fs-big-title: 3.5rem;
+  }
+  @include media(lg) {
+    --fs-xs: 0.8125rem; /* 13px */
+    --fs-sm: 0.9375rem; /* 15px */
+    --fs-base: 1.0625rem; /* 17px */
+    --fs-p: 1.0625rem; /* 17px */
+    --fs-h4: 1.25rem; /* 20px */
+    --fs-h2: 1.75rem; /* 28px */
+    --fs-h1: 2.5rem; /* 40px */
+    --fs-section-title: 3rem; /* 48px */
+    --fs-big-title: 3.5rem;
+  }
+  @include media(xxl) {
+    --fs-xs: 0.9375rem; /* 15px */
+    --fs-sm: 1.0625rem; /* 17px */
+    --fs-base: 1.25rem; /* 20px */
+    --fs-p: 1.25rem; /* 20px */
+    --fs-h4: 1.5rem; /* 24px */
+    --fs-h2: 2.25rem; /* 36px */
+    --fs-h1: 3.5rem; /* 56px */
+    --fs-section-title: 4rem; /* 64px */
+    --fs-big-title: 4.5rem; /* 72px */
+  }
+
+  --scrollbar-width: 12px;
+
+  --scrollbar-track-bg: #f1f1f1;
+  --scrollbar-track-br: 20px;
+
+  --scrollbar-thumb-bg: #b9b9b9;
+  --scrollbar-thumb-hover-bg: #555;
+  --scrollbar-thumb-br: 10px;
+  /* High Contrast Mode */
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+  list-style: none;
+  font: inherit;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  min-height: 100vh;
+  background-color: var(--clr-rose-100);
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+img {
+  background-repeat: no-repeat;
+  max-width: 100%;
+  height: auto;
+  font-style: italic;
+  background-size: cover;
+  vertical-align: center;
+  user-select: none;
+  max-height: 100%;
+  -webkit-user-drag: none;
+}
+/* prettier-ignore */
+h1,h2,h3,h4,h5,h6 {
+  font-family: var(--ff-headings);
+  font-weight: var(--fw-bold);
+}
+/* prettier-ignore */
+a,button,h1,h2,h3,h4,h5,h6 {
+  text-transform: capitalize;
+}
+
+/* Target the scrollbar */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width); /* width of the entire scrollbar */
+}
+/* Track = where the thumb (handle) moves x or v  */
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-bg); /* color of the track */
+  border-radius: var(--scrollbar-track-br); /* round the corners of the track */
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-bg); /* color of the handle */
+  border-radius: var(
+    --scrollbar-thumb-br
+  ); /* round the corners of the handle */
+  border: 2px solid #f1f1f1; /* adds space around the handle */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-bg); /* color when hovered */
+}
+
+.container {
+  width: 90%;
+  padding-inline: var(--spacing-4);
+  margin-inline: auto;
+  height: 100%;
+  max-width: 1300px;
+}
+
+h1 {
+  font-size: var(--fs-h2);
+  color: var(--clr-red);
+  font-weight: var(--fw-bold);
+  text-align: center;
+  margin-top: var(--spacing-5);
+  position: sticky;
+  top: var(--spacing-5);
+  background-color: var(--clr-rose-100);
+  width: fit-content;
+  margin: auto;
+  padding: var(--spacing-4);
+  border-radius: var(--br-3);
+  z-index: 20;
+  box-shadow: var(--box-shadow-lg);
+}
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: var(--spacing-6);
+  justify-content: center;
+  padding-block: var(--spacing-10);
+
+  .product {
+    border-radius: var(--br-3);
+    transition: var(--transition-duration-base);
+    box-shadow: var(--box-shadow-sm);
+    border: 1px solid transparent;
+    position: relative;
+    @include lazy-loader();
+    &:hover {
+      border-color: var(--clr-rose-300);
+      transform: translateY(calc(-1 * var(--spacing-2)));
+    }
+
+    &-image {
+      margin-bottom: var(--spacing-4);
+      overflow: hidden;
+      img {
+        border-radius: var(--br-3);
+        height: 100%;
+        display: block;
+        width: 100%;
+        min-height: 260px;
+        transition: var(--transition-duration-slow);
+      }
+    }
+
+    &-details {
+      text-align: left;
+      padding: var(--spacing-4);
+    }
+
+    &-category {
+      margin-bottom: var(--spacing-2);
+      color: var(--clr-gray-light);
+      font-weight: var(--fw-semibold);
+      font-size: var(--fs-sm);
+    }
+
+    &-name {
+      font-size: var(--fs-md);
+      color: var(--clr-text-dark);
+      margin-bottom: var(--spacing-1);
+      color: var(--clr-gray-dark);
+    }
+
+    &-price {
+      font-size: var(--fs-base);
+      color: var(--clr-red);
+      font-weight: var(--fw-semibold);
+    }
+  }
+}
