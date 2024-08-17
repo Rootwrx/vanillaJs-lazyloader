@@ -2,7 +2,7 @@ import Product from "./Product.js";
 
 const Render = async (container) => {
   try {
-    const res = await fetch("/js/data.json");
+    const res = await fetch("./js/data.json");
     if (!res.ok) throw new Error("data.json doesn't exit,or Wrong Path !");
     const data = await res.json();
     container = document.querySelector(container);
