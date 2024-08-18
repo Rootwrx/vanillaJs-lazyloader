@@ -8,12 +8,12 @@ class LazyLoader {
       retryAfter: 2000,
       maxRetries: 4,
       loadCallback: null,
+      failCallback: null,
       rootMargin: "0px 0px 100px 0px",
       threshold: 0.1,
       ...options,
     };
-    // prettier-ignore
-    this.selector = `${this.options.selector.trim()}:not([data-status="${this.options.loadedClass}"],[data-status="${this.options.loadingClass}"])`;
+    // this.selector = `${this.options.selector.trim()}:not([data-status="${this.options.loadedClass}"],[data-status="${this.options.loadingClass}"])`;
 
     this.elements = new Map();
     this.observer = null;
@@ -22,6 +22,7 @@ class LazyLoader {
   }
 
   handleIntersection(entries) {
+    console.log("enteries");
     if (!this.observer) return;
     for (const entry of entries) {
       if (entry.isIntersecting) {
@@ -29,10 +30,7 @@ class LazyLoader {
       }
     }
 
-    if (this.elements.size === 0) {
-      this.observer.disconnect();
-      this.observer = null;
-    }
+    if (this.elements.size === 0) this.destroy();
   }
   init() {
     this.lazyImgs = Array.from(
@@ -60,6 +58,7 @@ class LazyLoader {
       this.elements.set(element, {
         src: element.dataset?.src,
         srcset: element.dataset?.srcset,
+        sizes: element.dataset?.sizes,
         status: null,
       });
 
@@ -100,7 +99,7 @@ class LazyLoader {
 
       if (typeof loadCallback === "function") {
       }
-      loadCallback?.();
+      loadCallback?.(element);
       this.unobserve(element);
     } catch (error) {
       this.handleError(element, data);
@@ -113,7 +112,7 @@ class LazyLoader {
     // removing 'loading status' to allow retrying
     delete data.status;
     if (data.retries < this.options.maxRetries) {
-      console.log("Retrying loading ", element);
+      console.log("Retrying loading ", element?.src || "image");
       data.retries += 1;
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
     } else this.markAsError(element);
@@ -128,6 +127,7 @@ class LazyLoader {
     this.unobserve(element);
     element.removeAttribute("data-src");
     element.removeAttribute("data-srcset");
+    this.options.failCallback?.(element);
   }
 
   unobserve(element) {
@@ -139,6 +139,7 @@ class LazyLoader {
     return new Promise((resolve, reject) => {
       if (data.src) img.src = data.src;
       if (data.srcset) img.srcset = data.srcset;
+      if (data.sizes) img.sizes = data.sizes;
 
       // if image is already downloaded or cached before it intersects the viewport
       if (img.complete) resolve();
@@ -176,4 +177,5 @@ class LazyLoader {
     this.elements.clear();
   }
 }
+
 export default LazyLoader;

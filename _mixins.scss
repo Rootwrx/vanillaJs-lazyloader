@@ -1,3 +1,4 @@
+@import "./lazyloader";
 $grid-breakpoints: (
   sm: 640px,
   md: 768px,
@@ -30,72 +31,6 @@ $grid-breakpoints: (
     @media (min-width: $lower-breakpoint) and (max-width: ($upper-breakpoint - 1)) {
       @content;
     }
-  }
-}
-
-@mixin lazy-loader(
-  $loader-size: 50px,
-  $loader-border: 5px,
-  $loader-color: var(--clr-red),
-  $loader-bg: var(--clr-rose-50)
-) {
-  &.loader {
-    position: relative;
-    overflow: hidden;
-    &::after,
-    &::before {
-      content: "";
-      position: absolute;
-    }
-    &::before {
-      top: 50%;
-      left: 50%;
-      translate: -50% -50%;
-      height: $loader-size;
-      width: $loader-size;
-      border: $loader-border solid $loader-color;
-      border-left-width: 0px;
-      z-index: 10;
-      border-radius: 50%;
-      animation: loaderspin 1s linear infinite;
-    }
-
-    &::after {
-      height: 100%;
-      width: 100%;
-      background-color: $loader-bg;
-      z-index: 5;
-      inset: 0;
-    }
-
-    &:has(.loaded) {
-      &::before,
-      &::after {
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.5s ease-in, visibility 0.5s ease-in;
-      }
-    }
-  }
-
-  img.lazy-load {
-    filter: blur(19px);
-    opacity: 0;
-    transition: opacity 0.3s ease-in, filter 1s ease-in;
-
-    &.loaded {
-      opacity: 1;
-      filter: blur(0);
-    }
-  }
-}
-
-@keyframes loaderspin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
   }
 }
 

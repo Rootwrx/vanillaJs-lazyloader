@@ -7,7 +7,7 @@ const Product = ({
   image: { mobile, desktop, tablet },
 }) => {
   const product = document.createElement("div");
-  product.classList.add("product","loader");
+  product.classList.add("product", "loader");
   product.innerHTML = `
             <div class="product-image">
                 <img

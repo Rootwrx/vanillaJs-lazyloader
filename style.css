@@ -137,6 +137,12 @@
   font: inherit;
 }
 
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -202,7 +208,7 @@ a, button, h1, h2, h3, h4, h5, h6 {
   padding-inline: var(--spacing-4);
   margin-inline: auto;
   height: 100%;
-  max-width: 1300px;
+  max-width: 900px;
 }
 
 h1 {
@@ -246,6 +252,7 @@ h1 {
 .products .product.loader {
   position: relative;
   overflow: hidden;
+  --failure-times: 0;
 }
 .products .product.loader::after, .products .product.loader::before {
   content: "";
@@ -272,19 +279,24 @@ h1 {
   inset: 0;
 }
 .products .product.loader:has(.loaded)::before, .products .product.loader:has(.loaded)::after {
-  opacity: 0;
+  -webkit-transition: all 0.3s ease-in-out, height 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out, height 0.3s ease-in-out;
   visibility: hidden;
-  -webkit-transition: opacity 0.5s ease-in, visibility 0.5s ease-in;
-  transition: opacity 0.5s ease-in, visibility 0.5s ease-in;
+  pointer-events: none;
+  opacity: 0;
+}
+.products .product.loader:has(.failed)::after, .products .product.loader:has(.failed)::before {
+  content: none;
+  display: none;
 }
 .products .product img.lazy-load {
   -webkit-filter: blur(19px);
           filter: blur(19px);
   opacity: 0;
-  -webkit-transition: opacity 0.3s ease-in, -webkit-filter 1s ease-in;
-  transition: opacity 0.3s ease-in, -webkit-filter 1s ease-in;
-  transition: opacity 0.3s ease-in, filter 1s ease-in;
-  transition: opacity 0.3s ease-in, filter 1s ease-in, -webkit-filter 1s ease-in;
+  -webkit-transition: opacity 0.3s ease-in, -webkit-filter 0.6s ease-in;
+  transition: opacity 0.3s ease-in, -webkit-filter 0.6s ease-in;
+  transition: opacity 0.3s ease-in, filter 0.6s ease-in;
+  transition: opacity 0.3s ease-in, filter 0.6s ease-in, -webkit-filter 0.6s ease-in;
 }
 .products .product img.lazy-load.loaded {
   opacity: 1;

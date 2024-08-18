@@ -104,6 +104,7 @@
     --fs-section-title: 4rem; /* 64px */
     --fs-big-title: 4.5rem; /* 72px */
   }
+  
 
   --scrollbar-width: 12px;
 
@@ -116,6 +117,7 @@
   /* High Contrast Mode */
 }
 
+
 * {
   padding: 0;
   margin: 0;
@@ -123,6 +125,11 @@
   outline: none;
   list-style: none;
   font: inherit;
+}
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
 }
 html {
   scroll-behavior: smooth;
