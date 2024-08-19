@@ -116,6 +116,7 @@ class LazyLoader {
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
     } else this.markAsError(element);
 
+    
     //Todo: figure out why the fallback img is not loading
     // else {
     //   // try to apply fallback img
