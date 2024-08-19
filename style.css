@@ -293,6 +293,7 @@ h1 {
   visibility: hidden;
   pointer-events: none;
   opacity: 0;
+  content: none;
 }
 .products .product.loader:has(.failed)::before {
   border: none;
@@ -340,12 +341,7 @@ h1 {
   width: 100%;
   -webkit-transition: var(--transition-duration-slow);
   transition: var(--transition-duration-slow);
-  min-height: 200px;
-}
-@media only screen and (min-width: 1024px) {
-  .products .product-image img {
-    min-height: 240px;
-  }
+  height: 250px;
 }
 .products .product-details {
   text-align: left;

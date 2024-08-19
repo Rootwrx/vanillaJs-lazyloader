@@ -1,5 +1,3 @@
-
-
 @mixin lazy-loader(
   $loader-size: 50px,
   $loader-border: 5px,
@@ -39,7 +37,8 @@
     &:has(.loaded) {
       &::before,
       &::after {
-        @include fade(out) ;
+        @include fade(out);
+        content: none;
       }
     }
 
@@ -67,7 +66,7 @@
   img.lazy {
     filter: blur(19px);
     opacity: 0;
-    transition: opacity 0.3s ease-in, filter .7s ease-in;
+    transition: opacity 0.3s ease-in, filter 0.7s ease-in;
 
     &.loaded {
       opacity: 1;

@@ -9,9 +9,9 @@ class LazyLoader {
       maxRetries: 4,
       loadCallback: null,
       failCallback: null,
+      useFallbackImg: true,
       rootMargin: "0px 0px 100px 0px",
       threshold: 0.1,
-      useFallbackImg: true,
       fallbackSrc:
         "https://placehold.co/600x400?text=Original+Image+Has+Failed+!",
 
@@ -84,7 +84,6 @@ class LazyLoader {
     }
   }
 
-  
   loadImage(img, data) {
     return new Promise((resolve, reject) => {
       if (data.src) img.src = data.src;
@@ -97,24 +96,11 @@ class LazyLoader {
           : reject(new Error(`Image is broken: ${data.src}`));
       } else {
         img.onload = resolve;
-        img.onerror = () => {
-          // If both src and srcset are set, try loading with just src
-          if (data.src && data.srcset) {
-            img.srcset = "";
-            img.src = data.src;
-            img.onload = resolve;
-            img.onerror = () =>
-              reject(new Error(`Failed to load image: ${data.src}`));
-          } else {
-            reject(
-              new Error(`Failed to load image: ${data.src || img.srcset}`)
-            );
-          }
-        };
+        img.onerror = () =>
+          reject(new Error(`Failed to load image: ${data.src || img.srcset}`));
       }
     });
   }
-
 
   loadBackgroundImage(element, data) {
     return new Promise((resolve, reject) => {
@@ -141,20 +127,28 @@ class LazyLoader {
     this.unobserve(element);
   }
 
-  handleError(element, data) {
+  handleError(element, data, error) {
+    console.error(error.message);
     data.retries = (data.retries || 0) + 1;
+
     if (data.retries <= this.options.maxRetries) {
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
     } else if (!this.faiCallbackUsed) {
       this.useFailCallback(element, data);
     } else if (!this.fallBackSrcUsed && this.options.useFallbackImg) {
       this.useFallbackSrc(element, data);
-    } else {
-      this.markAsError(element);
-    }
+    } else if (!this.removeSrcset) {
+      //? why removing srcset ?
+      //* well, a even if img has a valid src, it will fail if it has a non-valid srcset
+      console.warn("Removing potentiel broken srcset");
+      this.removeSrcset = true;
+      element.srcset = "";
+      data.srcset = null;
+      this.loadElement(element);
+    } else this.markAsError(element);
   }
 
-  useFailCallback(element, data) {
+  useFailCallback(element) {
     this.faiCallbackUsed = true;
     this.options.failCallback?.(element);
 
@@ -162,20 +156,18 @@ class LazyLoader {
     const newSrcset = element.getAttribute("srcset");
 
     this.elements.set(element, {
-      ...data,
       src: newSrc,
-      srcset: newSrcset || null,
+      srcset: newSrcset,
     });
     this.loadElement(element);
   }
 
-  useFallbackSrc(element, data) {
+  useFallbackSrc(element) {
     this.fallBackSrcUsed = true;
     console.warn("Using fallback src as last resort");
 
     element.removeAttribute("srcset");
     this.elements.set(element, {
-      ...data,
       src: this.options.fallbackSrc,
       srcset: null,
     });

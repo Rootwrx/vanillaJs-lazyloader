@@ -243,10 +243,7 @@ h1 {
         display: block;
         width: 100%;
         transition: var(--transition-duration-slow);
-        min-height: 200px;
-        @include media(lg) {
-          min-height: 240px;
-        }
+        height: clamp(200px,250px,280pc);
       }
     }
 
