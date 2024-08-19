@@ -18,6 +18,9 @@ const Product = ({
                     ${tablet}  427w,
                     ${desktop} 502w
                   "
+                  data-sizes="(max-width: 600px) 654px, 
+                              (max-width: 768px) 427px, 
+                              502px"
                   alt="${name}"
                   class="lazy"
                 />
