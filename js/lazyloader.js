@@ -113,36 +113,57 @@ class LazyLoader {
     }
     // else this.markAsError(element);
 
-    //!: NOTE : 
+    //!: NOTE :
     //? When both the srcset and src attributes are present on an <img> element, the browser relies on the srcset attribute first. Here's how it works:
-    
-    //? srcset Attribute: The browser evaluates the srcset attribute to choose the most appropriate image based on the current viewport size, resolution, and other factors such as the sizes attribute (if provided). It selects an image from the srcset list that best matches these conditions. 
+
+    //? srcset Attribute: The browser evaluates the srcset attribute to choose the most appropriate image based on the current viewport size, resolution, and other factors such as the sizes attribute (if provided). It selects an image from the srcset list that best matches these conditions.
 
     //? src Attribute: If the srcset attribute is not provided or if the browser fails to find a suitable image in the srcset, it falls back to using the src attribute.
     else {
+      //Todo: Combine these two IFs
       // try to apply fallback img
-      if (!this.fallbackUsed) {
-        console.warn(`Using fallback image ${this.options.fallbackSrc}`);
-        element.onerror = () => this.markAsError(element);
-        // using fallbackused to avoid infinite error loading loop if the fallback img also fails !
+      // if (!this.fallbackUsed) {
+      //   console.warn(`Using fallback image ${this.options.fallbackSrc}`);
+      //   element.onerror = () => this.markAsError(element);
+      //   // using fallbackused to avoid infinite error loading loop if the fallback img also fails !
+      //   this.fallbackUsed = true;
+      //   this.elements.set(element, {
+      //     // src: this.options.fallbackSrc + "?" + new Date().getTime(), // this works
+      //     src: this.options.fallbackSrc,
+      //   });
+      //   // this is insane !!!! if you don't remove it ! the fallback img will never load ,it will try load  the failed srcset
+      //   element.removeAttribute("srcset"); // 2  days or more wasted because of that
+      //   this.loadElement(element);
+      // } else {
+      //   this.markAsError(element);
+      // }
+
+      if (
+        typeof this.options.failCallback == "function" &&
+        !this.fallbackUsed
+      ) {
         this.fallbackUsed = true;
-        this.elements.set(element, {
-          // src: this.options.fallbackSrc + "?" + new Date().getTime(), // this works
-          src: this.options.fallbackSrc,
-        });
-        // this is insane !!!! if you don't remove it ! the fallback img will never load ,it will try load  the failed srcset
-        element.removeAttribute("srcset"); // 2  days or more wasted because of that
-        this.loadElement(element);
-      } else {
-        this.markAsError(element);
-      }
+        this.options.failCallback(element);
+        const newSrc = element.getAttribute("src");
+        let newSrcset = element.getAttribute("srcset");
+
+        if (newSrc !== data.src || newSrcset !== data.srcset) {
+          console.log(newSrcset == data.srcset);
+          if (newSrcset == data.srcset) {
+            // removing if new fallback src changed to force the browser use 'src'
+            element.removeAttribute("srcset");
+            newSrcset = null;
+          }
+          this.elements.set(element, {
+            src: newSrc,
+            src: newSrcset,
+          });
+          this.loadElement(element);
+        } else this.markAsError(element);
+      } else this.markAsError(element);
     }
   }
 
-  refresh(element) {
-    this.observer.unobserve(element);
-    this.observer.observe(element);
-  }
 
   markAsError(element) {
     element.dataset.status = "failed";
