@@ -22,6 +22,7 @@ class LazyLoader {
     this.observer = null;
     this.fallBackSrcUsed = false;
     this.faiCallbackUsed = false;
+    this.removeSrcset = false;
 
     this.init();
   }
@@ -148,7 +149,7 @@ class LazyLoader {
     } else this.markAsError(element);
   }
 
-  useFailCallback(element) {
+  useFailCallback(element, data) {
     this.faiCallbackUsed = true;
     this.options.failCallback?.(element);
 
@@ -156,18 +157,20 @@ class LazyLoader {
     const newSrcset = element.getAttribute("srcset");
 
     this.elements.set(element, {
+      ...data,
       src: newSrc,
-      srcset: newSrcset,
+      srcset: newSrcset || null,
     });
     this.loadElement(element);
   }
 
-  useFallbackSrc(element) {
+  useFallbackSrc(element, data) {
     this.fallBackSrcUsed = true;
     console.warn("Using fallback src as last resort");
 
     element.removeAttribute("srcset");
     this.elements.set(element, {
+      ...data,
       src: this.options.fallbackSrc,
       srcset: null,
     });

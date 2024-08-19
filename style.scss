@@ -239,11 +239,10 @@ h1 {
       overflow: hidden;
       img {
         border-radius: var(--br-3);
-        height: 100%;
         display: block;
         width: 100%;
         transition: var(--transition-duration-slow);
-        height: clamp(200px,250px,280pc);
+        height: clamp(200px, 250px, 280pc);
       }
     }
 
@@ -274,5 +273,35 @@ h1 {
       color: var(--clr-red);
       font-weight: var(--fw-semibold);
     }
+  }
+}
+
+
+.page-loader {
+  background-color: white;
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: var(--z-index-loader);
+  @include box(100%);
+
+  &::before {
+    position: absolute;
+    content: "";
+    margin: auto;
+    z-index: calc(var(--z-index-loader) + 1);
+    @include box(100px);
+    border-radius: var(--br-full);
+    border: 3px solid;
+    border-left-color:red;
+    animation: spin 1s infinite linear forwards;
+  }
+}
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

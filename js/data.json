@@ -89,10 +89,10 @@
   },
   {
     "image": {
-      "thumbnail": "./images/image-panna-cotta-thumbnail.jpgv",
-      "mobile": "./images/image-panna-cotta-mobile.jpgv",
-      "tablet": "./images/image-panna-cotta-tablet.jpgv",
-      "desktop": "./images/image-panna-cotta-desktop.jpgv"
+      "thumbnail": "./images/image-panna-cotta-thumbnail.jpg",
+      "mobile": "./images/image-panna-cotta-mobile.jpg",
+      "tablet": "./images/image-panna-cotta-tablet.jpg",
+      "desktop": "./images/image-panna-cotta-desktop.jpg"
     },
     "name": "Vanilla Panna Cotta",
     "category": "Panna Cotta",
