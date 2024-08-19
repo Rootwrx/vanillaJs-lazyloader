@@ -310,10 +310,6 @@ h1 {
   color: var(--clr-red);
   font-weight: var(--fw-bold);
 }
-.products .product.loader:has(.failed)::after, .products .product.loader:has(.failed)::before {
-  content: none;
-  display: none;
-}
 .products .product img.lazy {
   -webkit-filter: blur(19px);
           filter: blur(19px);

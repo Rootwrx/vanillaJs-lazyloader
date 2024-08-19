@@ -5,10 +5,11 @@ class LazyLoader {
       loadedClass: "loaded",
       selector: "lazy",
       errorClass: "failed",
-      retryAfter: 600,
-      maxRetries: 4,
+      retryAfter: 400,
+      maxRetries: 3,
       loadCallback: null,
       failCallback: null,
+      useFallbackImg: true,
       rootMargin: "0px 0px 100px 0px",
       threshold: 0.1,
       fallbackSrc:
@@ -132,9 +133,12 @@ class LazyLoader {
 
     if (data.retries <= this.options.maxRetries) {
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
-    } else if (!this.faiCallbackUsed) {
+    } else if (
+      !this.faiCallbackUsed &&
+      typeof this.options.failCallback == "function"
+    ) {
       this.useFailCallback(element, data);
-    } else if (!this.fallBackSrcUsed) {
+    } else if (!this.fallBackSrcUsed && this.options.useFallbackImg) {
       this.useFallbackSrc(element, data);
     } else {
       this.markAsError(element);
@@ -143,7 +147,7 @@ class LazyLoader {
 
   useFailCallback(element) {
     this.faiCallbackUsed = true;
-    this.options.failCallback?.(element);
+    this.options.failCallback(element);
 
     const newSrc = element.getAttribute("src");
     const newSrcset = element.getAttribute("srcset");

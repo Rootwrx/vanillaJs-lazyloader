@@ -57,10 +57,10 @@
         color: var(--clr-red);
         font-weight: var(--fw-bold);
       }
-      &::after ,&::before {
-        content: none;
-        display: none;
-      }
+      // &::after ,&::before {
+      //   content: none;
+      //   display: none;
+      // }
     }
   }
 
