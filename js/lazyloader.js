@@ -6,29 +6,30 @@ class LazyLoader {
       selector: ".lazy-load",
       errorClass: "failed",
       retryAfter: 2000,
-      maxRetries: 4,
+      maxRetries: 3,
       loadCallback: null,
       failCallback: null,
       rootMargin: "0px 0px 100px 0px",
       threshold: 0.1,
+      fallbackSrc: null,
+
       ...options,
     };
     // this.selector = `${this.options.selector.trim()}:not([data-status="${this.options.loadedClass}"],[data-status="${this.options.loadingClass}"])`;
-
+    this.fallbackUsed = false;
     this.elements = new Map();
     this.observer = null;
     this.lazyImgs = [];
+    this.fallback = false;
     this.init();
   }
 
   handleIntersection(entries) {
     console.log("enteries");
     if (!this.observer) return;
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        this.loadElement(entry.target);
-      }
-    }
+    entries.forEach(
+      (entry) => entry.isIntersecting && this.loadElement(entry.target)
+    );
 
     if (this.elements.size === 0) this.destroy();
   }
@@ -36,7 +37,7 @@ class LazyLoader {
     this.lazyImgs = Array.from(
       document.querySelectorAll(this.options.selector)
     );
-    if (!"IntersectionObserver" in window) {
+    if (!("IntersectionObserver" in window)) {
       console.warn("IntersectionObserver is not supported by this browser.");
       this.loadImagesFallback();
       return;
@@ -74,9 +75,6 @@ class LazyLoader {
     const data = this.elements.get(element);
     if (!data) return;
     const { loadingClass, loadedClass, loadCallback } = this.options;
-    if (data.status == loadingClass) {
-      console.log(element);
-    }
     if (
       data.status == loadingClass ||
       data.status == loadedClass ||
@@ -103,19 +101,40 @@ class LazyLoader {
       this.unobserve(element);
     } catch (error) {
       this.handleError(element, data);
-      throw error;
+      console.log(error.message);
     }
   }
 
   handleError(element, data) {
     if (!data.retries) data.retries = 1;
+
     // removing 'loading status' to allow retrying
     delete data.status;
-    if (data.retries < this.options.maxRetries) {
-      console.log("Retrying loading ", element?.src || "image");
+
+    if (data.retries <= this.options.maxRetries) {
       data.retries += 1;
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
     } else this.markAsError(element);
+
+    //Todo: figure out why the fallback img is not loading
+    // else {
+    //   // try to apply fallback img
+    //   if (!this.fallbackUsed && this.options.fallbackSrc) {
+    //     console.warn(`Using fallback image ${this.options.fallbackSrc}`);
+    //     element.setAttribute("src", this.options.fallbackSrc);
+    //     element.onerror = () => this.markAsError(element);
+    //     // using fallbackused to avoid infinite error loading loop if the fallback img also fails !
+    //     this.fallbackUsed = true;
+    //     this.loadElement(element);
+    //   } else {
+    //     this.markAsError(element);
+    //   }
+    // }
+  }
+
+  refresh(element) {
+    this.observer.unobserve(element);
+    this.observer.observe(element);
   }
 
   markAsError(element) {
@@ -127,7 +146,7 @@ class LazyLoader {
     this.unobserve(element);
     element.removeAttribute("data-src");
     element.removeAttribute("data-srcset");
-    this.options.failCallback?.(element);
+    this.options.failCallback?.(element) ;
   }
 
   unobserve(element) {
@@ -137,13 +156,16 @@ class LazyLoader {
 
   loadImg(img, data) {
     return new Promise((resolve, reject) => {
+      // checking for lements that only want to be animated when intersecting
       if (data.src) img.src = data.src;
       if (data.srcset) img.srcset = data.srcset;
       if (data.sizes) img.sizes = data.sizes;
 
-      // if image is already downloaded or cached before it intersects the viewport
-      if (img.complete) resolve();
-      else {
+      if (img.complete) {
+        if (!img.naturalWidth)
+          reject(new Error(`Image is broken: ${data.src}`));
+        resolve();
+      } else {
         img.onload = resolve;
         img.onerror = () =>
           reject(new Error(`Failed to load image: ${data.src || img.srcset}`));

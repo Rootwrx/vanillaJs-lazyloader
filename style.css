@@ -252,7 +252,6 @@ h1 {
 .products .product.loader {
   position: relative;
   overflow: hidden;
-  --failure-times: 0;
 }
 .products .product.loader::after, .products .product.loader::before {
   content: "";
@@ -284,6 +283,22 @@ h1 {
   visibility: hidden;
   pointer-events: none;
   opacity: 0;
+}
+.products .product.loader:has(.failed)::before {
+  border: none;
+  content: "Error loading image";
+  font-family: "Courier New", Courier, monospace;
+  height: 0;
+  -webkit-animation: none;
+          animation: none;
+  white-space: nowrap;
+  text-align: center;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  font-size: var(--fs-h4);
+  color: var(--clr-red);
+  font-weight: var(--fw-bold);
 }
 .products .product.loader:has(.failed)::after, .products .product.loader:has(.failed)::before {
   content: none;

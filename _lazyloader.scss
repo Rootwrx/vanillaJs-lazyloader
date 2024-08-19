@@ -9,7 +9,6 @@
   &.loader {
     position: relative;
     overflow: hidden;
-    --failure-times: 0;
     &::after,
     &::before {
       content: "";
@@ -45,19 +44,19 @@
     }
 
     &:has(.failed) {
-      // &::before {
-      //   border: none;
-      //   content: "Error loading image";
-      //   font-family: "Courier New", Courier, monospace;
-      //   height: 0;
-      //   animation: none;
-      //   white-space: nowrap;
-      //   text-align: center;
-      //   width: fit-content;
-      //   font-size: var(--fs-h4);
-      //   color: var(--clr-red);
-      //   font-weight: var(--fw-bold);
-      // }
+      &::before {
+        border: none;
+        content: "Error loading image";
+        font-family: "Courier New", Courier, monospace;
+        height: 0;
+        animation: none;
+        white-space: nowrap;
+        text-align: center;
+        width: fit-content;
+        font-size: var(--fs-h4);
+        color: var(--clr-red);
+        font-weight: var(--fw-bold);
+      }
       &::after ,&::before {
         content: none;
         display: none;
