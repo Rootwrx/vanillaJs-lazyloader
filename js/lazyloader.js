@@ -232,7 +232,7 @@ class LazyLoader {
       threshold: 0.1,
       fallbackSrc:
         "https://placehold.co/600x400?text=Original+Image+Has+Failed+!",
-        
+
       ...options,
     };
 
@@ -280,11 +280,9 @@ class LazyLoader {
   }
 
   handleIntersection(entries) {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        this.loadElement(entry.target);
-      }
-    });
+    entries.forEach(
+      (entry) => entry.isIntersecting && this.loadElement(entry.target)
+    );
   }
 
   async loadElement(element) {
@@ -351,7 +349,6 @@ class LazyLoader {
     data.retries = (data.retries || 0) + 1;
 
     if (data.retries <= this.options.maxRetries) {
-      console.error(data);
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
     } else if (!this.fallbackUsed) {
       this.tryFallback(element, data);
@@ -366,7 +363,8 @@ class LazyLoader {
     this.fallbackUsed = true;
     this.options.failCallback?.(element);
     const newSrc =
-      element.getAttribute("src") && element.getAttribute("src") !== data.src
+      element.getAttribute("src").trim() &&
+      element.getAttribute("src") !== data.src
         ? element.getAttribute("src")
         : this.options.fallbackSrc;
     const newSrcset =
