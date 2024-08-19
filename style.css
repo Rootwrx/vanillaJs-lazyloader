@@ -79,6 +79,7 @@
   --br-pill: 100px;
   --br-full: 50%;
   --z-index-loader: 1080;
+  --products-gap: 1rem;
   --scrollbar-width: 12px;
   --scrollbar-track-bg: #f1f1f1;
   --scrollbar-track-br: 20px;
@@ -102,6 +103,7 @@
 }
 @media only screen and (min-width: 1024px) {
   :root {
+    --products-gap: 1.6rem;
     --fs-xs: 0.8125rem; /* 13px */
     --fs-sm: 0.9375rem; /* 15px */
     --fs-base: 1.0625rem; /* 17px */
@@ -115,6 +117,7 @@
 }
 @media only screen and (min-width: 1536px) {
   :root {
+    --products-gap: 2rem;
     --fs-xs: 0.9375rem; /* 15px */
     --fs-sm: 1.0625rem; /* 17px */
     --fs-base: 1.25rem; /* 20px */
@@ -210,6 +213,11 @@ a, button, h1, h2, h3, h4, h5, h6 {
   height: 100%;
   max-width: 900px;
 }
+@media only screen and (max-width: 767px) {
+  .container {
+    width: 100%;
+  }
+}
 
 h1 {
   font-size: var(--fs-h2);
@@ -234,11 +242,13 @@ h1 {
 .products {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: var(--spacing-6);
+  gap: var(--products-gap);
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
   padding-block: var(--spacing-10);
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
 }
 .products .product {
   border-radius: var(--br-3);
@@ -308,10 +318,10 @@ h1 {
   -webkit-filter: blur(19px);
           filter: blur(19px);
   opacity: 0;
-  -webkit-transition: opacity 0.3s ease-in, -webkit-filter 0.6s ease-in;
-  transition: opacity 0.3s ease-in, -webkit-filter 0.6s ease-in;
-  transition: opacity 0.3s ease-in, filter 0.6s ease-in;
-  transition: opacity 0.3s ease-in, filter 0.6s ease-in, -webkit-filter 0.6s ease-in;
+  -webkit-transition: opacity 0.3s ease-in, -webkit-filter 0.7s ease-in;
+  transition: opacity 0.3s ease-in, -webkit-filter 0.7s ease-in;
+  transition: opacity 0.3s ease-in, filter 0.7s ease-in;
+  transition: opacity 0.3s ease-in, filter 0.7s ease-in, -webkit-filter 0.7s ease-in;
 }
 .products .product img.lazy.loaded {
   opacity: 1;
@@ -332,13 +342,23 @@ h1 {
   height: 100%;
   display: block;
   width: 100%;
-  min-height: 260px;
   -webkit-transition: var(--transition-duration-slow);
   transition: var(--transition-duration-slow);
+  min-height: 200px;
+}
+@media only screen and (min-width: 1024px) {
+  .products .product-image img {
+    min-height: 240px;
+  }
 }
 .products .product-details {
   text-align: left;
-  padding: var(--spacing-4);
+  padding: var(--spacing-2);
+}
+@media only screen and (min-width: 768px) {
+  .products .product-details {
+    padding: var(--spacing-4);
+  }
 }
 .products .product-category {
   margin-bottom: var(--spacing-2);
