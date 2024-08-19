@@ -13,7 +13,7 @@ for file in *mobile*; do
         newfile="${filename}_blurred.${file##*.}"
 
         # Use FFmpeg to create the small, blurred image
-        ffmpeg -i "$file" -vf "scale=10:-1,scale=10:-1:flags=neighbor" -q:v 2 "$newfile"
+        ffmpeg -i "$file" -vf "scale=5:-1,scale=5:-1:flags=neighbor" -q:v 2 "$newfile"
 
         echo "Processed $file to $newfile"
     fi
