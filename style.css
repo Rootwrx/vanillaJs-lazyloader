@@ -304,7 +304,7 @@ h1 {
   content: none;
   display: none;
 }
-.products .product img.lazy-load {
+.products .product img.lazy {
   -webkit-filter: blur(19px);
           filter: blur(19px);
   opacity: 0;
@@ -313,7 +313,7 @@ h1 {
   transition: opacity 0.3s ease-in, filter 0.6s ease-in;
   transition: opacity 0.3s ease-in, filter 0.6s ease-in, -webkit-filter 0.6s ease-in;
 }
-.products .product img.lazy-load.loaded {
+.products .product img.lazy.loaded {
   opacity: 1;
   -webkit-filter: blur(0);
           filter: blur(0);

@@ -3,7 +3,7 @@ class LazyLoader {
     this.options = {
       loadingClass: "loading",
       loadedClass: "loaded",
-      selector: ".lazy-load",
+      selector: "lazy",
       errorClass: "failed",
       retryAfter: 2000,
       maxRetries: 3,
@@ -11,7 +11,8 @@ class LazyLoader {
       failCallback: null,
       rootMargin: "0px 0px 100px 0px",
       threshold: 0.1,
-      fallbackSrc: null,
+      fallbackSrc:
+        "https://placehold.co/600x400?text=Original+Image+Has+Failed+!",
 
       ...options,
     };
@@ -20,23 +21,18 @@ class LazyLoader {
     this.elements = new Map();
     this.observer = null;
     this.lazyImgs = [];
-    this.fallback = false;
     this.init();
   }
 
   handleIntersection(entries) {
-    console.log("enteries");
     if (!this.observer) return;
     entries.forEach(
       (entry) => entry.isIntersecting && this.loadElement(entry.target)
     );
-
-    if (this.elements.size === 0) this.destroy();
   }
   init() {
-    this.lazyImgs = Array.from(
-      document.querySelectorAll(this.options.selector)
-    );
+    this.lazyImgs = document.querySelectorAll(`.${this.options.selector}`);
+
     if (!("IntersectionObserver" in window)) {
       console.warn("IntersectionObserver is not supported by this browser.");
       this.loadImagesFallback();
@@ -114,23 +110,33 @@ class LazyLoader {
     if (data.retries <= this.options.maxRetries) {
       data.retries += 1;
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
-    } else this.markAsError(element);
+    }
+    // else this.markAsError(element);
 
+    //!: NOTE : 
+    //? When both the srcset and src attributes are present on an <img> element, the browser relies on the srcset attribute first. Here's how it works:
     
-    //Todo: figure out why the fallback img is not loading
-    // else {
-    //   // try to apply fallback img
-    //   if (!this.fallbackUsed && this.options.fallbackSrc) {
-    //     console.warn(`Using fallback image ${this.options.fallbackSrc}`);
-    //     element.setAttribute("src", this.options.fallbackSrc);
-    //     element.onerror = () => this.markAsError(element);
-    //     // using fallbackused to avoid infinite error loading loop if the fallback img also fails !
-    //     this.fallbackUsed = true;
-    //     this.loadElement(element);
-    //   } else {
-    //     this.markAsError(element);
-    //   }
-    // }
+    //? srcset Attribute: The browser evaluates the srcset attribute to choose the most appropriate image based on the current viewport size, resolution, and other factors such as the sizes attribute (if provided). It selects an image from the srcset list that best matches these conditions. 
+
+    //? src Attribute: If the srcset attribute is not provided or if the browser fails to find a suitable image in the srcset, it falls back to using the src attribute.
+    else {
+      // try to apply fallback img
+      if (!this.fallbackUsed) {
+        console.warn(`Using fallback image ${this.options.fallbackSrc}`);
+        element.onerror = () => this.markAsError(element);
+        // using fallbackused to avoid infinite error loading loop if the fallback img also fails !
+        this.fallbackUsed = true;
+        this.elements.set(element, {
+          // src: this.options.fallbackSrc + "?" + new Date().getTime(), // this works
+          src: this.options.fallbackSrc,
+        });
+        // this is insane !!!! if you don't remove it ! the fallback img will never load ,it will try load  the failed srcset
+        element.removeAttribute("srcset"); // 2  days or more wasted because of that
+        this.loadElement(element);
+      } else {
+        this.markAsError(element);
+      }
+    }
   }
 
   refresh(element) {
@@ -147,7 +153,7 @@ class LazyLoader {
     this.unobserve(element);
     element.removeAttribute("data-src");
     element.removeAttribute("data-srcset");
-    this.options.failCallback?.(element) ;
+    this.options.failCallback?.(element);
   }
 
   unobserve(element) {

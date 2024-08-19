@@ -19,7 +19,7 @@ const Product = ({
                     ${desktop} 502w
                   "
                   alt="${name}"
-                  class="lazy-load"
+                  class="lazy"
                 />
                
             <section class="product-details">

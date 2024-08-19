@@ -64,7 +64,7 @@
     }
   }
 
-  img.lazy-load {
+  img.lazy {
     filter: blur(19px);
     opacity: 0;
     transition: opacity 0.3s ease-in, filter .6s ease-in;
