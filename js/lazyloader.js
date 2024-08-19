@@ -5,13 +5,13 @@ class LazyLoader {
       loadedClass: "loaded",
       selector: "lazy",
       errorClass: "failed",
-      retryAfter: 400,
-      maxRetries: 3,
+      retryAfter: 600,
+      maxRetries: 4,
       loadCallback: null,
       failCallback: null,
-      useFallbackImg: true,
       rootMargin: "0px 0px 100px 0px",
       threshold: 0.1,
+      useFallbackImg: true,
       fallbackSrc:
         "https://placehold.co/600x400?text=Original+Image+Has+Failed+!",
 
@@ -84,6 +84,7 @@ class LazyLoader {
     }
   }
 
+  
   loadImage(img, data) {
     return new Promise((resolve, reject) => {
       if (data.src) img.src = data.src;
@@ -96,11 +97,24 @@ class LazyLoader {
           : reject(new Error(`Image is broken: ${data.src}`));
       } else {
         img.onload = resolve;
-        img.onerror = () =>
-          reject(new Error(`Failed to load image: ${data.src || img.srcset}`));
+        img.onerror = () => {
+          // If both src and srcset are set, try loading with just src
+          if (data.src && data.srcset) {
+            img.srcset = "";
+            img.src = data.src;
+            img.onload = resolve;
+            img.onerror = () =>
+              reject(new Error(`Failed to load image: ${data.src}`));
+          } else {
+            reject(
+              new Error(`Failed to load image: ${data.src || img.srcset}`)
+            );
+          }
+        };
       }
     });
   }
+
 
   loadBackgroundImage(element, data) {
     return new Promise((resolve, reject) => {
@@ -127,16 +141,11 @@ class LazyLoader {
     this.unobserve(element);
   }
 
-  handleError(element, data, error) {
-    console.error(error.message);
+  handleError(element, data) {
     data.retries = (data.retries || 0) + 1;
-
     if (data.retries <= this.options.maxRetries) {
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
-    } else if (
-      !this.faiCallbackUsed &&
-      typeof this.options.failCallback == "function"
-    ) {
+    } else if (!this.faiCallbackUsed) {
       this.useFailCallback(element, data);
     } else if (!this.fallBackSrcUsed && this.options.useFallbackImg) {
       this.useFallbackSrc(element, data);
@@ -145,26 +154,28 @@ class LazyLoader {
     }
   }
 
-  useFailCallback(element) {
+  useFailCallback(element, data) {
     this.faiCallbackUsed = true;
-    this.options.failCallback(element);
+    this.options.failCallback?.(element);
 
     const newSrc = element.getAttribute("src");
     const newSrcset = element.getAttribute("srcset");
 
     this.elements.set(element, {
+      ...data,
       src: newSrc,
-      srcset: newSrcset,
+      srcset: newSrcset || null,
     });
     this.loadElement(element);
   }
 
-  useFallbackSrc(element) {
+  useFallbackSrc(element, data) {
     this.fallBackSrcUsed = true;
     console.warn("Using fallback src as last resort");
 
     element.removeAttribute("srcset");
     this.elements.set(element, {
+      ...data,
       src: this.options.fallbackSrc,
       srcset: null,
     });

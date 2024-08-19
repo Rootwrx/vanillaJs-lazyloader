@@ -3,5 +3,5 @@ import Render from "./Render.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   await Render(".products");
-  new LazyLoader({ useFallbackImg :false});
+  new LazyLoader();
 });
