@@ -21,7 +21,7 @@ class LazyLoader {
     this.elements = new Map();
     this.observer = null;
     this.fallBackSrcUsed = false;
-    this.faiCallbackUsed = false;
+    this.failCallbackUsed = false;
     this.removeSrcset = false;
 
     this.init();
@@ -134,7 +134,7 @@ class LazyLoader {
 
     if (data.retries <= this.options.maxRetries) {
       setTimeout(() => this.loadElement(element), this.options.retryAfter);
-    } else if (!this.faiCallbackUsed) {
+    } else if (!this.failCallbackUsed) {
       this.useFailCallback(element, data);
     } else if (!this.fallBackSrcUsed && this.options.useFallbackImg) {
       this.useFallbackSrc(element, data);
@@ -150,7 +150,7 @@ class LazyLoader {
   }
 
   useFailCallback(element, data) {
-    this.faiCallbackUsed = true;
+    this.failCallbackUsed = true;
     this.options.failCallback?.(element);
 
     const newSrc = element.getAttribute("src");
